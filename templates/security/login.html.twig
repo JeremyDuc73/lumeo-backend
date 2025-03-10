@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+
+{% block body %}
+    <form method="post" class="max-w-sm h-screen m-auto pt-30">
+        {% if error %}
+            <div class="text-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        <h1 class="mb-5 text-4xl font-bold leading-none tracking-tight text-gray-900">Se connecter</h1>
+
+        {% if app.user %}
+            <div class="mb-3">
+                Vous êtes déjà connecté en tant que {{ app.user.userIdentifier }}, <a class="font-medium text-blue-600 hover:underline" href="{{ path('app_logout') }}">Se déconnecter</a>
+            </div>
+        {% endif %}
+
+        <div class="mb-5">
+            <label for="inputEmail" class="block mb-2 text-sm font-medium text-gray-900">Adresse mail</label>
+            <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" autocomplete="email" required autofocus>
+        </div>
+        <div class="mb-5">
+            <label for="inputPassword" class="block mb-2 text-sm font-medium text-gray-900">Mot de passe</label>
+            <input type="password" name="password" id="inputPassword" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" autocomplete="current-password" required>
+        </div>
+
+        <input type="hidden" name="_csrf_token"
+               data-controller="csrf-protection"
+               value="{{ csrf_token('authenticate') }}"
+        >
+
+
+        <button class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center cursor-pointer" type="submit">
+            Se connecter
+        </button>
+    </form>
+
+
+
+
+
+    {#<form class="">
+        <div class="flex items-start mb-5">
+            <div class="flex items-center h-5">
+                <input id="remember" type="checkbox" value="" class="w-4 h-4 border border-gray-300 rounded-sm bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800" required />
+            </div>
+            <label for="remember" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Remember me</label>
+        </div>
+        <button type="submit" class="dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
+    </form>#}
+
+{% endblock %}
