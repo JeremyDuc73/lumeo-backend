@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ProfileRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ProfileRepository::class)]
 class Profile
@@ -14,13 +15,16 @@ class Profile
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['profile:read'])]
     private ?string $username = null;
 
     #[ORM\OneToOne(inversedBy: 'profile', cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['profile:read'])]
     private ?User $ofUser = null;
 
     #[ORM\Column]
+    #[Groups(['profile:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     public function getId(): ?int

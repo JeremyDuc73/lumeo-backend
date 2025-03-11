@@ -48,7 +48,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-     #[Route('/register_check', methods: ['POST'])]
+     #[Route('/api/register_check', methods: ['POST'])]
      public function registerApi(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, SerializerInterface $serializer, UserRepository $repo): Response
      {
          $user = $serializer->deserialize($request->getContent(), User::class, 'json');
@@ -64,7 +64,7 @@ class RegistrationController extends AbstractController
              $user->setProfile($profile);
              $entityManager->persist($user);
              $entityManager->flush();
-             return $this->json($user, 200, [], ['groups' => 'user:read']);
+             return $this->json('ok', 200, [], ['groups' => 'user:read']);
          } else {
              return $this->json('email already used', 401);
          }
