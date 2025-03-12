@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ProfileRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -26,6 +27,14 @@ class Profile
     #[ORM\Column]
     #[Groups(['profile:read'])]
     private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[Groups(['profile:read'])]
+    private ?Image $image = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['profile:read'])]
+    private ?string $description = null;
 
     public function getId(): ?int
     {
@@ -64,6 +73,30 @@ class Profile
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getImage(): ?Image
+    {
+        return $this->image;
+    }
+
+    public function setImage(?Image $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }
