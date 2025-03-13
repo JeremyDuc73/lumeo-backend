@@ -36,6 +36,10 @@ class Profile
     #[Groups(['profile:read'])]
     private ?string $description = null;
 
+    #[ORM\Column]
+    #[Groups(['profile:read'])]
+    private ?int $credits = 0;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -97,6 +101,18 @@ class Profile
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCredits(): ?int
+    {
+        return $this->credits;
+    }
+
+    public function setCredits(int $credits): static
+    {
+        $this->credits = $credits;
 
         return $this;
     }
