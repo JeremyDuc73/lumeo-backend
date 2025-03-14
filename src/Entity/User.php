@@ -22,7 +22,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['profile:read'])]
+    #[Groups(['profile:read', 'order:read'])]
     private ?string $email = null;
 
     /**
