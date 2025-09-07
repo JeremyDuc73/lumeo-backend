@@ -1,20 +1,329 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Lumeo API Documentation{% endblock %}
 
 {% block body %}
 <style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+  :root {
+    --bg: #0b1220;
+    --card: #0f172a;
+    --muted: #93a4b8;
+    --text: #e6edf7;
+    --primary: #3b82f6;
+    --accent: #22c55e;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --border: rgba(148, 163, 184, .15);
+    --code: #0b1220;
+  }
+  .doc-page {
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    color: var(--text);
+    background: radial-gradient(1200px 600px at 30% -10%, rgba(59,130,246,.25), transparent 50%), linear-gradient(180deg, #0a0f1c 0%, #0c1324 100%);
+    min-height: 100vh;
+    padding: 3rem 1rem 5rem;
+  }
+  .container {
+    max-width: 1152px;
+    margin: 0 auto;
+  }
+  .hero {
+    display: grid;
+    gap: .75rem;
+    margin-bottom: 2rem;
+  }
+  .hero h1 {
+    font-weight: 800;
+    font-size: clamp(28px, 4vw, 40px);
+    letter-spacing: .2px;
+  }
+  .muted { color: var(--muted); }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  @media (min-width: 1024px) {
+    .grid { grid-template-columns: 300px 1fr; gap: 1.5rem; }
+  }
+  .card {
+    background: linear-gradient(180deg, rgba(148,163,184,.06), rgba(148,163,184,.04));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1rem;
+  }
+  .nav {
+    position: sticky;
+    top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+  }
+  .nav a {
+    color: var(--muted);
+    text-decoration: none;
+    padding: .5rem .75rem;
+    border-radius: 10px;
+  }
+  .nav a:hover { background: rgba(148,163,184,.06); color: var(--text); }
+  .section {
+    display: grid;
+    gap: .75rem;
+    padding: 1rem;
+  }
+  .section h2 {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin: 0;
+  }
+  .endpoint {
+    border-left: 3px solid var(--border);
+    padding-left: .75rem;
+    margin: .25rem 0 .75rem;
+  }
+  .pill { font-size: .75rem; padding: .15rem .5rem; border-radius: 999px; border: 1px solid var(--border); }
+  .get { color: #22c55e; border-color: rgba(34,197,94,.4); }
+  .post { color: #3b82f6; border-color: rgba(59,130,246,.4); }
+  .put { color: #eab308; border-color: rgba(234,179,8,.4); }
+  .delete { color: #ef4444; border-color: rgba(239,68,68,.4); }
+  pre {
+    background: linear-gradient(180deg, rgba(15,23,42,.8), rgba(15,23,42,.7));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: .75rem .9rem;
+    overflow: auto;
+    color: #e2e8f0;
+    font-size: .9rem;
+  }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  .kbd { font-size: .8rem; background: rgba(148,163,184,.15); padding: .15rem .4rem; border-radius: 6px; }
+  .list { margin: 0; padding-left: 1rem; }
+  .list li { margin: .25rem 0; }
+  .badge { display: inline-block; font-size: .7rem; padding: .1rem .45rem; border-radius: 6px; background: rgba(148,163,184,.12); border: 1px solid var(--border); color: var(--muted); }
+  .hr { height: 1px; background: var(--border); margin: .5rem 0 1rem; border: 0; }
 </style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+<div class="doc-page">
+  <div class="container">
+    <div class="hero">
+      <div class="badge">Lumeo API</div>
+      <h1>API Documentation</h1>
+      <div class="muted">Plateforme de micro-services • REST JSON • Authentification JWT (Lexik)</div>
+    </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/jeremy/PhpstormProjects/lumeo-backend/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>/home/jeremy/PhpstormProjects/lumeo-backend/templates/home/index.html.twig</code></li>
-    </ul>
+    <div class="grid">
+      <nav class="card nav">
+        <a href="#overview">Aperçu</a>
+        <a href="#auth">Authentification</a>
+        <a href="#services">Services</a>
+        <a href="#conversations">Conversations</a>
+        <a href="#reservations">Réservations</a>
+        <a href="#profile">Profil</a>
+        <a href="#orders">Commandes</a>
+        <a href="#payments">Paiements</a>
+        <a href="#mercure">Mercure (temps réel)</a>
+        <a href="#errors">Erreurs & Statuts</a>
+      </nav>
+
+      <main class="card">
+        <section id="overview" class="section">
+          <h2>Aperçu</h2>
+          <div class="muted">Base URL</div>
+          <pre><code>https://{{ app.request.host }}/api</code></pre>
+          <div class="muted">Format</div>
+          <ul class="list">
+            <li>JSON UTF-8</li>
+            <li>En-tête <span class="kbd">Authorization: Bearer &lt;JWT&gt;</span> pour les endpoints protégés</li>
+          </ul>
+          <hr class="hr" />
+        </section>
+
+        <section id="auth" class="section">
+          <h2>Authentification</h2>
+          <div class="endpoint"><span class="pill post">POST</span> /api/login_check</div>
+          <pre><code class="language-json">Request:
+POST /api/login_check
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "secret"
+}
+
+Response 200:
+{
+  "token": "&lt;jwt&gt;"
+}</code></pre>
+          <div class="muted">Utilisez ce jeton dans l’en-tête <span class="kbd">Authorization: Bearer &lt;jwt&gt;</span>.</div>
+          <hr class="hr" />
+        </section>
+
+        <section id="services" class="section">
+          <h2>Services</h2>
+          <div class="endpoint"><span class="pill get">GET</span> /api/services</div>
+          <pre><code>200 OK
+[
+  { "id": 1, "title": "Logo minimaliste", "cost": 50, "isAvailable": true, ... }
+]</code></pre>
+
+          <div class="endpoint"><span class="pill get">GET</span> /api/services/{id}</div>
+          <pre><code>200 OK
+{ "id": 1, "title": "Logo minimaliste", "description": "...", "cost": 50, ... }</code></pre>
+
+          <div class="endpoint"><span class="pill post">POST</span> /api/services</div>
+          <pre><code>Auth: Bearer
+Body (JSON):
+{
+  "title": "Traduction FR-EN",
+  "description": "Je traduis vos textes",
+  "cost": 25,
+  "tags": [1, 2]  // ids de catégories
+}</code></pre>
+
+          <div class="endpoint"><span class="pill put">PUT</span> /api/services/{id}</div>
+          <pre><code>Auth: Bearer (propriétaire)
+Body (JSON): mêmes champs que création (hors "status")
+Remplace les catégories avec "tags".</code></pre>
+
+          <div class="endpoint"><span class="pill delete">DELETE</span> /api/services/{id}</div>
+          <pre><code>Auth: Bearer (propriétaire)
+204 No Content</code></pre>
+
+          <div class="endpoint"><span class="pill post">POST</span> /api/services/{id}/purchase</div>
+          <pre><code>Auth: Bearer
+Body (JSON) optionnel:
+{ "message": "Bonjour, j'ai besoin de ..." }
+
+Effets:
+- Crée une réservation (reserved)
+- Crée une conversation liée
+- Rend le service indisponible
+- Publie des notifications (Mercure)
+
+Response 201:
+{
+  "reservation": { ... },
+  "conversation": { ... }
+}</code></pre>
+          <hr class="hr" />
+        </section>
+
+        <section id="conversations" class="section">
+          <h2>Conversations</h2>
+          <div class="endpoint"><span class="pill get">GET</span> /api/conversations</div>
+          <pre><code>Auth: Bearer
+200 OK: liste des conversations de l'utilisateur (buyer/seller)</code></pre>
+
+          <div class="endpoint"><span class="pill get">GET</span> /api/conversations/{id}</div>
+          <pre><code>Auth: Bearer + doit être participant
+200 OK: conversation + messages</code></pre>
+
+          <div class="endpoint"><span class="pill post">POST</span> /api/conversations/{id}/messages</div>
+          <pre><code>Auth: Bearer + doit être participant
+Body:
+{ "content": "Votre message" }
+
+Response 201: message créé + publication Mercure</code></pre>
+          <hr class="hr" />
+        </section>
+
+        <section id="reservations" class="section">
+          <h2>Réservations</h2>
+          <div class="endpoint"><span class="pill post">POST</span> /api/reservations/{id}/complete</div>
+          <pre><code>Auth: Bearer (vendeur)
+Effets:
+- Marque la réservation "completed"
+- Rend le service à nouveau disponible
+- Publie des notifications "reservation.completed"
+
+Response 200: réservation mise à jour</code></pre>
+          <hr class="hr" />
+        </section>
+
+        <section id="profile" class="section">
+          <h2>Profil</h2>
+          <div class="endpoint"><span class="pill get">GET</span> /api/myprofile</div>
+          <pre><code>Auth: Bearer
+200 OK: profil courant (groups: profile:read)</code></pre>
+
+          <div class="endpoint"><span class="pill post">POST</span> /api/profile/edit</div>
+          <pre><code>Auth: Bearer
+Body:
+{ "username": "Alice", "description": "Graphiste" }</code></pre>
+
+          <div class="endpoint"><span class="pill post">POST</span> /api/profile/edit-image</div>
+          <pre><code>Auth: Bearer
+Form-Data:
+imageFile: (fichier)</code></pre>
+          <hr class="hr" />
+        </section>
+
+        <section id="orders" class="section">
+          <h2>Commandes</h2>
+          <div class="endpoint"><span class="pill get">GET</span> /api/myorders</div>
+          <pre><code>Auth: Bearer
+200 OK: commandes (achats de LumCoins)</code></pre>
+          <hr class="hr" />
+        </section>
+
+        <section id="payments" class="section">
+          <h2>Paiements</h2>
+          <div class="endpoint"><span class="pill post">POST</span> /api/payment/create</div>
+          <pre><code>Auth: Bearer
+Body:
+{ "amount": 10, "coins": 100 }
+
+Response 200:
+{ "checkoutUrl": "https://checkout.stripe.com/..." }</code></pre>
+
+          <div class="endpoint"><span class="pill post">POST</span> /api/payment/confirm-checkout</div>
+          <pre><code>Body:
+{ "session_id": "&lt;CHECKOUT_SESSION_ID&gt;" }
+
+Effet: crédite les LumCoins si paiement "paid".</code></pre>
+          <hr class="hr" />
+        </section>
+
+        <section id="mercure" class="section">
+          <h2>Mercure (temps réel)</h2>
+          <div class="muted">Topics principaux</div>
+          <ul class="list">
+            <li><code>https://lumeo.app/profiles/{profileId}/notifications</code> — événements: <code>message.created</code>, <code>reservation.created</code>, <code>reservation.completed</code></li>
+            <li><code>https://lumeo.app/conversations/{conversationId}</code> — événements: <code>message.created</code></li>
+          </ul>
+          <pre><code>Exemple payload "message.created":
+{
+  "type": "message.created",
+  "conversationId": 123,
+  "message": {
+    "id": 456,
+    "content": "Bonjour !",
+    "senderProfileId": 7,
+    "createdAt": "2025-09-07T12:34:56+00:00"
+  }
+}</code></pre>
+          <hr class="hr" />
+        </section>
+
+        <section id="errors" class="section">
+          <h2>Erreurs & Statuts</h2>
+          <ul class="list">
+            <li><span class="pill">200</span> OK</li>
+            <li><span class="pill">201</span> Created</li>
+            <li><span class="pill">204</span> No Content</li>
+            <li><span class="pill">400</span> Bad Request</li>
+            <li><span class="pill">401</span> Unauthorized</li>
+            <li><span class="pill">403</span> Forbidden</li>
+            <li><span class="pill">404</span> Not Found</li>
+            <li><span class="pill">409</span> Conflict</li>
+            <li><span class="pill">422</span> Unprocessable Entity</li>
+            <li><span class="pill">500</span> Internal Server Error</li>
+          </ul>
+          <div class="muted">Format d’erreur typique</div>
+          <pre><code>{ "error": "Message explicatif" }</code></pre>
+        </section>
+      </main>
+    </div>
+  </div>
 </div>
 {% endblock %}
