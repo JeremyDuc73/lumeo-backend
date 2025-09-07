@@ -20,7 +20,7 @@ final class ProfileController extends AbstractController
     {
         return $this->json($this->getUser()->getProfile(), 200, [], ['groups'=>'profile:read']);
     }
-
+    
     #[Route('/api/profile/edit', methods: ['POST'])]
     public function edit(Request $request, EntityManagerInterface $manager): JsonResponse
     {

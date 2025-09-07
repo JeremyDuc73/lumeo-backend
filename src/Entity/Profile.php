@@ -15,6 +15,7 @@ class Profile
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['profile:read', 'order:read', 'service:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -48,9 +49,16 @@ class Profile
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'profile')]
     private Collection $orders;
 
+    /**
+     * @var Collection<int, Service>
+     */
+    #[ORM\OneToMany(targetEntity: Service::class, mappedBy: 'byProfile', orphanRemoval: true)]
+    private Collection $services;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
+        $this->services = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -154,6 +162,36 @@ class Profile
             // set the owning side to null (unless already changed)
             if ($order->getProfile() === $this) {
                 $order->setProfile(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Service>
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(Service $service): static
+    {
+        if (!$this->services->contains($service)) {
+            $this->services->add($service);
+            $service->setByProfile($this);
+        }
+
+        return $this;
+    }
+
+    public function removeService(Service $service): static
+    {
+        if ($this->services->removeElement($service)) {
+            // set the owning side to null (unless already changed)
+            if ($service->getByProfile() === $this) {
+                $service->setByProfile(null);
             }
         }
 

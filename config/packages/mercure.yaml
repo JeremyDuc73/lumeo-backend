@@ -1,0 +1,9 @@
+# Mercure configuration (enable after installing symfony/mercure-bundle)
+mercure:
+  hubs:
+    default:
+      url: '%env(resolve:MERCURE_URL)%'
+      public_url: '%env(resolve:MERCURE_PUBLIC_URL)%'
+      jwt:
+        secret: '%env(MERCURE_JWT_SECRET)%'
+        publish: ['*']

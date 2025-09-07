@@ -22,3 +22,11 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Controller\ConversationController:
+        bind:
+            $hub: '@?mercure.hub.default'
+
+    App\Controller\ServiceController:
+        bind:
+            $hub: '@?mercure.hub.default'

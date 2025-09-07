@@ -16,3 +16,26 @@ services:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
 ###< symfony/mailer ###
+
+  ###> mercure ###
+  mercure:
+    image: dunglas/mercure
+    restart: unless-stopped
+    ports:
+      - "9090:80"
+    environment:
+      SERVER_NAME: ':80'
+      MERCURE_PUBLISHER_JWT_KEY: 'dev-mercure-secret-32bytes-min-length-1234567890'
+      MERCURE_SUBSCRIBER_JWT_KEY: 'dev-mercure-secret-32bytes-min-length-1234567890'
+      MERCURE_EXTRA_DIRECTIVES: |
+        cors_origins *
+        publish_origins *
+        anonymous
+    command: /usr/bin/caddy run --config /etc/caddy/Caddyfile
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/healthz"]
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+  ###< mercure ###
+ 
