@@ -52,8 +52,10 @@ final class PaymentController extends AbstractController
                 'coins' => $coins,
             ],
             'mode' => 'payment',
-            'success_url' => 'http://localhost:3000/payment-success?session_id={CHECKOUT_SESSION_ID}',
-            'cancel_url' => 'http://localhost:3000/profile',
+            // Build return URLs from env to support prod/staging domains
+            // FRONT_BASE_URL should be like "https://lumeo.app" in production
+            'success_url' => rtrim($_ENV['FRONT_BASE_URL'] ?? ($_SERVER['FRONT_BASE_URL'] ?? 'http://localhost:3000'), '/') . '/payment-success?session_id={CHECKOUT_SESSION_ID}',
+            'cancel_url' => rtrim($_ENV['FRONT_BASE_URL'] ?? ($_SERVER['FRONT_BASE_URL'] ?? 'http://localhost:3000'), '/') . '/profile',
         ]);
 
         return $this->json(['checkoutUrl' => $checkoutSession->url]);
